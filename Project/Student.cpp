@@ -45,6 +45,12 @@ void Student::printList() const
 bool Student::passedAllExams() const
 {
 	size_t size = this->list.getSize();
+	if (size == 0)
+	{
+		std::cout << "Student did not take any exams!" << std::endl;
+		return false;
+	}
+
 	for (size_t i = 0; i < size; i++)
 		if (this->list[i].getMark() < 3)
 		{
@@ -143,12 +149,16 @@ void Student::advance()
 	}
 
 	this->course++;
+	std::cout << "Student Advanced Successfully!" << std::endl;
 }
 
 void Student::graduate()
 {
 	if (this->course == 4 && this->passedAllExams() && this->status == "Registered")
+	{
 		this->status = "Graduated";
+		std::cout << "Student Graduated Successfully!" << std::endl;
+	}
 	else
 		std::cout << "Student does not meet the requirements to graduate!" << std::endl;
 }
@@ -156,7 +166,10 @@ void Student::graduate()
 void Student::interrupt()
 {
 	if (this->status == "Registered")
+	{
 		this->status = "Dropout";
+		std::cout << "Student Interrupted Successfully!" << std::endl;
+	}
 	else
 		std::cout << "Student is not Registered and cannot interrupt!" << std::endl;
 }
@@ -164,7 +177,10 @@ void Student::interrupt()
 void Student::resume()
 {
 	if (this->status == "Dropout")
+	{
 		this->status = "Registered";
+		std::cout << "Student Resumed Successfully!" << std::endl;
+	}
 	else
 		std::cout << "Student is not Dropout and cannot resume!" << std::endl;
 }
@@ -209,6 +225,7 @@ void Student::takeUpDiscipline(const Discipline& discipline)
 		}
 
 	this->list.add(discipline);
+	std::cout << "Student Registered in Discipline Successfully!" << std::endl;
 }
 
 void Student::addMark(const Discipline& discipline, const double& mark)
@@ -233,11 +250,13 @@ void Student::addMark(const Discipline& discipline, const double& mark)
 			if (temp % 10 >= 5)
 			{
 				this->list[i].setMark(ceil(mark));
+				std::cout << "Student Graded Successfully!" << std::endl;
 				return;
 			}
 			else
 			{
 				this->list[i].setMark(floor(mark));
+				std::cout << "Student Graded Successfully!" << std::endl;
 				return;
 			}
 		}

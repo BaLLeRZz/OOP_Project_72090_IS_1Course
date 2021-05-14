@@ -478,18 +478,10 @@ void Command::enroll(const size_t& facultyNumber, Specialty& specialty, const si
 void Command::advance(const size_t& facultyNumber)
 {
 	size_t size = this->students.getSize();
-	bool flag = true;
 	for(size_t i = 0; i < size; i++)
 		if (this->students[i].getFacultyNumber() == facultyNumber)
 		{
 			this->students[i].advance();
-			if (this->students[i].getCourse() <= 4 && flag)
-			{
-				std::cout << "Student Advanced Successfully!" << std::endl;
-				if (this->students[i].getCourse() == 4)
-				    flag = false;
-				return;
-			}
 			return;
 		}
 
@@ -500,7 +492,7 @@ void Command::change(const size_t& facultyNumber)
 {
 	String option = this->takeSpecialty(this->command);
 	String value = this->takeName(this->command);
-	size_t group = value.convertFromString();
+	size_t group = this->takeNumber(this->command);
 	size_t size = this->students.getSize();
 
 	for (size_t i = 0; i < size; i++)
@@ -517,12 +509,12 @@ void Command::change(const size_t& facultyNumber)
 				this->checkSpec(specialty);
 				this->students[i].setSpecialty(specialty);
 				std::cout << "Specialty changed successfully!" << std::endl;
-				//this->students[i].clearList();
+				return;
+				
 			}
 			else
 				if (option == "group")
 				{
-					std::cout << group;
 					if (group < 1 || group > 5)
 					{
 						std::cout << "Invalid Group Input!" << std::endl;
@@ -530,11 +522,11 @@ void Command::change(const size_t& facultyNumber)
 					}
 					this->students[i].setGroup(group);
 					std::cout << "Group changed successfully!" << std::endl;
+					return;
 				}
 				else
 					if (option == "course")
 					{
-						std::cout << group;
 						if (group < 1 || group > 4)
 						{
 							std::cout << "Invalid Course Input!" << std::endl;
@@ -542,6 +534,7 @@ void Command::change(const size_t& facultyNumber)
 						}
 						this->students[i].setCourse(group);
 						std::cout << "Course changed successfully!" << std::endl;
+						return;
 					}
 					else
 					{
@@ -561,7 +554,6 @@ void Command::graduate(const size_t& facultyNumber)
 		if (this->students[i].getFacultyNumber() == facultyNumber)
 		{
 			this->students[i].graduate();
-			std::cout << "Student Graduated Successfully!" << std::endl;
 			return;
 		}
 
@@ -575,7 +567,6 @@ void Command::interrupt(const size_t& facultyNumber)
 		if (this->students[i].getFacultyNumber() == facultyNumber)
 		{
 			this->students[i].interrupt();
-			std::cout << "Student Interrupted Successfully!" << std::endl;
 			return;
 		}
 
@@ -589,7 +580,6 @@ void Command::resume(const size_t& facultyNumber)
 		if (this->students[i].getFacultyNumber() == facultyNumber)
 		{
 			this->students[i].resume();
-			std::cout << "Student Resumed Successfully!" << std::endl;
 			return;
 		}
 
@@ -602,7 +592,7 @@ void Command::print(const size_t& facultyNumber) const
 	for (size_t i = 0; i < size; i++)
 		if (this->students[i].getFacultyNumber() == facultyNumber)
 		{
-			std::cout << "Student's information: " << std::endl;
+			std::cout << "Student's information: " << std::endl << std::endl;
 			this->students[i].print();
 			return;
 		}
@@ -612,17 +602,7 @@ void Command::print(const size_t& facultyNumber) const
 
 void Command::printAll(Specialty& specialty, const size_t& course)
 {
-	this->checkSpec(specialty);
-	bool flag = false;
-	size_t sizeSp = this->specialties.getSize();
-	for (size_t i = 0; i < sizeSp; i++)
-		if (this->specialties[i] == specialty)
-		{
-			flag = true;
-			break;
-		}
-
-	if (!flag)
+	if (!this->checkSpec(specialty))
 	{
 		std::cout << "Specialty does not exist!" << std::endl;
 		return;
@@ -634,9 +614,10 @@ void Command::printAll(Specialty& specialty, const size_t& course)
 		return;
 	}
 	
-	std::cout << "Students' information: " << std::endl;
-	size_t sizeSt = this->students.getSize();
-	for (size_t i = 0; i < sizeSt; i++)
+	std::cout << "Students' information: " << std::endl << std::endl;
+	size_t size = this->students.getSize();
+	this->checkSpec(specialty);
+	for (size_t i = 0; i < size; i++)
 		if (this->students[i].getSpecialty() == specialty.getName() && this->students[i].getCourse() == course)
 		{
 			this->students[i].print();
@@ -646,21 +627,18 @@ void Command::printAll(Specialty& specialty, const size_t& course)
 
 void Command::enrollIn(const size_t& facultyNumber, Discipline& discipline)
 {
-	this->checkDisc(discipline);
-	size_t sizeS = this->students.getSize();
-	size_t sizeD = this->disciplines.getSize();
-	for (size_t i = 0; i < sizeS; i++)
+	size_t size = this->students.getSize();
+	for (size_t i = 0; i < size; i++)
 		if (this->students[i].getFacultyNumber() == facultyNumber)
 		{
-			for (size_t j = 0; j < sizeD; j++)
-				if (this->disciplines[j] == discipline)
+				if (this->checkDisc(discipline))
 				{
 					Specialty spec = this->students[i].getSpecialty();
 					this->checkSpec(spec);
+					this->checkDisc(discipline);
 					if (spec.isDisciplineInList(discipline))
 					{
 						this->students[i].takeUpDiscipline(discipline);
-						std::cout << "Student Registered in Discipline Successfully!" << std::endl;
 						return;
 					}
 					std::cout << "Discipline is not included in Student's Specialty!" << std::endl;
@@ -682,13 +660,11 @@ void Command::addGrade(const size_t& facultyNumber, Discipline& discipline, cons
 	for (size_t i = 0; i < sizeS; i++)
 		if (this->students[i].getFacultyNumber() == facultyNumber)
 		{
-			for(size_t j = 0; j < sizeD; j++)
-				if (this->disciplines[j] == discipline)
+				if (this->checkDisc(discipline))
 				{
 					if (this->students[i].isDiscInList(discipline))
 					{
 						this->students[i].addMark(discipline, grade);
-						std::cout << "Student Graded Successfully!" << std::endl;
 						return;
 					}
 					std::cout << "Student is not registered in this discipline!" << std::endl;
@@ -703,26 +679,16 @@ void Command::addGrade(const size_t& facultyNumber, Discipline& discipline, cons
 
 void Command::protocol(Discipline& discipline)
 {
-	this->checkDisc(discipline);
-	bool flag = false;
-	size_t sizeS = this->students.getSize();
-	size_t sizeD = this->disciplines.getSize();
-	for (size_t j = 0; j < sizeD; j++)
-		if (this->disciplines[j] == discipline)
-		{
-			flag = true;
-			break;
-		}
-
-	if (flag == false)
+	size_t size = this->students.getSize();
+	if (!this->checkDisc(discipline))
 	{
 		std::cout << "Discipline does not exist!" << std::endl;
 		return;
 	}
 
 	Student temp;
-	for (size_t i = 0; i < sizeS; i++)
-		for (size_t j = i; j < sizeS; j++)
+	for (size_t i = 0; i < size; i++)
+		for (size_t j = i; j < size; j++)
 			if (this->students[i].getFacultyNumber() > this->students[j].getFacultyNumber())
 			{
 				temp = this->students[i];
@@ -730,10 +696,12 @@ void Command::protocol(Discipline& discipline)
 				this->students[j] = temp;
 			}
 
-	std::cout << "Discipline's Registered Students: " << std::endl;
-	for (size_t i = 0; i < sizeS; i++)
+	this->checkDisc(discipline);
+	std::cout << "Discipline's Registered Students: " << std::endl << std::endl;
+	for (size_t i = 0; i < size; i++)
 	{
 		this->students[i].protocol(discipline);
+		std::cout << std::endl;
 	}
 }
 
@@ -743,7 +711,7 @@ void Command::report(const size_t& facultyNumber) const
 	for (size_t i = 0; i < size; i++)
 		if (this->students[i].getFacultyNumber() == facultyNumber)
 		{
-			std::cout << "Student's exams information: " << std::endl;
+			std::cout << "Student's exams information: " << std::endl << std::endl;
 			this->students[i].examsInfo();
 			return;
 		}
