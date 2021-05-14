@@ -1,6 +1,6 @@
 #pragma once
 #include "Student.h"
-
+#include <fstream>
 class Command
 {
 private:
@@ -37,4 +37,6 @@ public:
 	void addGrade(const size_t&, Discipline&, const double&);
 	void protocol(Discipline&);
 	void report(const size_t&) const;
+	void save(std::ofstream&) const;
+	void open(std::ifstream&);
 };

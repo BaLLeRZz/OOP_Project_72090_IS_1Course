@@ -186,6 +186,18 @@ void Command::chooseCommand()
 																		else
 																			if (comm == "change")
 																				this->change(facultyNumber);
+																			else
+																				if (comm == "save")
+																				{
+																					std::ofstream saveData;
+																					this->save(saveData);
+																				}
+																				else
+																					if (comm == "open")
+																					{
+																						std::ifstream loadData;
+																						this->open(loadData);
+																					}
 		            										else
 		            											std::cout << "Invalid Command!" << std::endl;
 		this->command.clear();
@@ -717,4 +729,30 @@ void Command::report(const size_t& facultyNumber) const
 		}
 
 	std::cout << "Faculty number does not exist!" << std::endl;
+}
+
+void Command::save(std::ofstream& saveData) const
+{
+	saveData.open("Students List.txt", std::ios::app);
+	if (saveData.is_open())
+	{
+		saveData << this->students << std::endl;
+		std::cout << "Data Saved successfully!" << std::endl;
+	}
+	else
+		std::cout << "File didn't open!" << std::endl;
+	saveData.close();
+}
+
+void Command::open(std::ifstream& loadData)
+{
+	loadData.open("Students List.txt");
+	if (loadData.is_open())
+	{
+		loadData >> this->students;
+		std::cout << "File Opened successfully!" << std::endl;
+	}
+	else
+		std::cout << "File didn't open!" << std::endl;
+	//loadData.close();
 }

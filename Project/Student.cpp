@@ -11,10 +11,7 @@ double Student::avarage()
 	}
 
 	if (this->list.getSize() == 0)
-	{
-		std::cout << "Student is not Registered in any disciplines!" << std::endl;
 		return 0;
-	}
 
 	double sum = 0;
 	size_t size = this->list.getSize();
@@ -71,13 +68,6 @@ bool Student::isDiscInList(const Discipline& discipline)
 	}
 
 	return false;
-}
-
-void Student::replaceList(const Vector<Discipline>& other)
-{
-	size_t size = other.getSize();
-	for (size_t i = 0; i < size; i++)
-		this->list[i] = other[i];
 }
 
 void Student::setSpecialty(const Specialty& _specialty)
