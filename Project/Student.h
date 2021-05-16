@@ -27,8 +27,8 @@ public:
 	size_t getGroup() const;
 	const String getStatus() const;
 	size_t getListSize() const;
-	void save();
-	void load();
+	void save(std::ofstream&);
+	void load(std::ifstream&);
 	void removeDisc(const size_t);
 
 	void enroll(const size_t&, const Specialty&, const size_t&, const String&);

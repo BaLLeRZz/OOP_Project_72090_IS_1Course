@@ -27,8 +27,8 @@ public:
 	void printDiscInfo(Discipline&);
 	void printSpecInfo(Specialty&);
 
-	void save() const;
-	void open();
+	void save(std::ofstream&) const;
+	void load();
 
 	void enroll(const size_t&, Specialty&, const size_t&, const String&);
 	void advance(const size_t&);

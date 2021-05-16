@@ -126,37 +126,25 @@ size_t Student::getListSize() const
 	return this->list.getSize();
 }
 
-void Student::save()
+void Student::save(std::ofstream& saveData)
 {
-	std::ofstream saveData("Students List.txt", std::ios::app);
-	if (saveData.is_open())
-	{
-		saveData << this->name << std::endl;
-		saveData << this->facultyNumber << std::endl;
-		saveData << this->course << std::endl;
-		saveData << this->specialty << std::endl;
-		saveData << this->group << std::endl;
-		saveData << this->status << std::endl;
-		saveData << this->avarage() << std::endl;
-	}
-	else
-		std::cout << "File did not open!" << std::endl;
+	saveData << this->name << std::endl;
+	saveData << this->facultyNumber << std::endl;
+	saveData << this->course << std::endl;
+	saveData << this->specialty << std::endl;
+	saveData << this->group << std::endl;
+	saveData << this->status << std::endl;
+	saveData << this->avarage() << std::endl;
 }
 
-void Student::load()
+void Student::load(std::ifstream& loadData)
 {
-	std::ifstream loadData("Students List.txt");
-	if (loadData.is_open())
-	{
-		loadData >> this->name;
-		loadData >> this->facultyNumber;
-		loadData >> this->course;
-		loadData >> this->specialty;
-		loadData >> this->group;
-		loadData >> this->status;
-	}
-	else
-		std::cout << "File did not open!" << std::endl;
+	loadData >> this->name;
+	loadData >> this->facultyNumber;
+	loadData >> this->course;
+	loadData >> this->specialty;
+	loadData >> this->group;
+	loadData >> this->status;
 }
 
 void Student::removeDisc(const size_t index)

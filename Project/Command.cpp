@@ -189,12 +189,14 @@ void Command::chooseCommand()
 																			else
 																				if (comm == "save")
 																				{
-																					this->save();
+																					std::ofstream saveData;
+																					this->save(saveData);
 																				}
 																				else
 																					if (comm == "open")
 																					{
-																						this->open();
+																						
+																						this->load();
 																					}
 		            										else
 		            											std::cout << "Invalid Command!" << std::endl;
@@ -445,7 +447,7 @@ void Command::printSpecInfo(Specialty& specialty)
 
 	specialty.print();
 }
-void Command::save() const
+void Command::save(std::ofstream& saveData) const
 {
 	if (this->students.getSize() == 0)
 	{
@@ -453,20 +455,38 @@ void Command::save() const
 		return;
 	}
 
-	size_t size = this->students.getSize();
-	for (size_t i = 0; i < size; i++)
-		this->students[i].save();
+	saveData.open("Students List.txt", std::ios::beg);
+	if (saveData.is_open())
+	{
+		size_t size = this->students.getSize();
+		saveData << size << std::endl;
+		for (size_t i = 0; i < size; i++)
+			this->students[i].save(saveData);
+	}
+	else
+		std::cout << "File did not open!" << std::endl;
 
 	std::cout << "Data Saved successfully!" << std::endl;
 }
 
-void Command::open()
+void Command::load()
 {
+	std::fstream loadData("this->takeSpecialty(this->command).txt");
+	/*if (loadData.is_open())
+	{
+		while(loadData.get() != '\n')
 		size_t size = this->students.getSize();
-		for (size_t i = 0; i < size; i++)
-			this->students[i].load();
+		for (size_t i = 0; i < 3; i++)
+		{
+			this->students[i].load(loadData);
+			this->students.add(this->students[i]);
+			students[i].print();
+		}
+	}
+	else
+		std::cout << "File did not open!" << std::endl;*/
 
-		std::cout << "Data Loaded successfully!" << std::endl;
+	std::cout << "Data Loaded successfully!" << std::endl;
 }
 
 void Command::enroll(const size_t& facultyNumber, Specialty& specialty, const size_t& group, const String& name)
