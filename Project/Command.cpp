@@ -189,14 +189,12 @@ void Command::chooseCommand()
 																			else
 																				if (comm == "save")
 																				{
-																					std::ofstream saveData;
-																					this->save(saveData);
+																					this->save();
 																				}
 																				else
 																					if (comm == "open")
 																					{
-																						std::ifstream loadData;
-																						this->open(loadData);
+																						this->open();
 																					}
 		            										else
 		            											std::cout << "Invalid Command!" << std::endl;
@@ -264,6 +262,37 @@ String Command::takeCommand(String _command)
 	return _command;
 }
 
+size_t Command::takeFacultyNumber(String& _command)
+{
+	size_t count = 0;
+	size_t size = _command.getLength();
+	for (size_t i = 0; i < size; i++)
+		if (_command[i] >= '0' && _command[i] <= '9')
+		{
+			if ((_command[i + 1] < '0' || _command[i + 1] > '9') && _command[i + 1] != ' ')
+				return 0;
+
+			if (_command[i + 1] < '0' || _command[i + 1] > '9')
+			{
+				count++;
+				break;
+			}
+			else
+				count++;
+		}
+
+	size_t position = pow(10, count - 1);
+	size_t sum = 0;
+	for (size_t i = 0; i < size; i++)
+		if (_command[i] >= '0' && _command[i] <= '9')
+		{
+			sum += position * (_command[i] - 48);
+			position /= 10;
+		}
+
+	return sum;
+}
+
 String Command::takeSpecialty(String _command)
 {
 	size_t size = _command.getLength();
@@ -307,66 +336,6 @@ String Command::takeSpecialty(String _command)
 	return _command;
 }
 
-String Command::takeName(String _command)
-{
-	size_t position = 0, count = 0;
-	size_t size = this->command.getLength();
-	bool flag = false;
-	for (size_t i = size - 1; i >= 0; i--)
-	{
-		if ((_command[i] >= 'a' && _command[i] <= 'z') || (_command[i] >= 'A' && _command[i] <= 'Z'))
-		{
-			count++;
-			flag = true;
-		}
-
-		if (_command[i] != ' ' && _command[i - 1] == ' ' && flag)
-		{
-			position++;
-			break;
-		}
-		position++;
-	}
-
-	for (size_t i = size - position, j = 0; j < count; i++, j++)
-	{
-		_command[j] = _command[i];
-	}
-	_command[count] = '\0';
-	return _command;
-}
-
-size_t Command::takeFacultyNumber(String& _command)
-{
-	size_t count = 0;
-	size_t size = _command.getLength();
-	for (size_t i = 0; i < size; i++)
-		if (_command[i] >= '0' && _command[i] <= '9')
-		{
-			if ((_command[i + 1] < '0' || _command[i + 1] > '9') && _command[i + 1] != ' ')
-				return 0;
-
-			if (_command[i + 1] < '0' || _command[i + 1] > '9')
-			{
-				count++;
-				break;
-			}
-			else
-				count++;
-		}
-
-	size_t position = pow(10, count - 1);
-	size_t sum = 0;
-	for (size_t i = 0; i < size; i++)
-		if (_command[i] >= '0' && _command[i] <= '9')
-		{
-			sum += position * (_command[i] - 48);
-			position /= 10;
-		}
-
-	return sum;
-}
-
 size_t Command::takeNumber(String _command)
 {
 	size_t position = 0, count = 0;
@@ -398,6 +367,35 @@ size_t Command::takeNumber(String _command)
 	_command[count] = '\0';
 
 	return this->takeFacultyNumber(_command);
+}
+
+String Command::takeName(String _command)
+{
+	size_t position = 0, count = 0;
+	size_t size = this->command.getLength();
+	bool flag = false;
+	for (size_t i = size - 1; i >= 0; i--)
+	{
+		if ((_command[i] >= 'a' && _command[i] <= 'z') || (_command[i] >= 'A' && _command[i] <= 'Z'))
+		{
+			count++;
+			flag = true;
+		}
+
+		if (_command[i] != ' ' && _command[i - 1] == ' ' && flag)
+		{
+			position++;
+			break;
+		}
+		position++;
+	}
+
+	for (size_t i = size - position, j = 0; j < count; i++, j++)
+	{
+		_command[j] = _command[i];
+	}
+	_command[count] = '\0';
+	return _command;
 }
 
 void Command::printDisciplines() const
@@ -446,6 +444,29 @@ void Command::printSpecInfo(Specialty& specialty)
 	}
 
 	specialty.print();
+}
+void Command::save() const
+{
+	if (this->students.getSize() == 0)
+	{
+		std::cout << "No Data to save!" << std::endl;
+		return;
+	}
+
+	size_t size = this->students.getSize();
+	for (size_t i = 0; i < size; i++)
+		this->students[i].save();
+
+	std::cout << "Data Saved successfully!" << std::endl;
+}
+
+void Command::open()
+{
+		size_t size = this->students.getSize();
+		for (size_t i = 0; i < size; i++)
+			this->students[i].load();
+
+		std::cout << "Data Loaded successfully!" << std::endl;
 }
 
 void Command::enroll(const size_t& facultyNumber, Specialty& specialty, const size_t& group, const String& name)
@@ -518,8 +539,17 @@ void Command::change(const size_t& facultyNumber)
 					std::cout << "Specialty does not exist!" << std::endl;
 					return;
 				}
+
+				size_t count = this->students[i].getListSize();
+				for (size_t j = 0; count > 0;)
+				{
+					this->students[i].removeDisc(j);
+					count--;
+				}
+
 				this->checkSpec(specialty);
 				this->students[i].setSpecialty(specialty);
+
 				std::cout << "Specialty changed successfully!" << std::endl;
 				return;
 				
@@ -650,7 +680,7 @@ void Command::enrollIn(const size_t& facultyNumber, Discipline& discipline)
 					this->checkDisc(discipline);
 					if (spec.isDisciplineInList(discipline))
 					{
-						this->students[i].takeUpDiscipline(discipline);
+						this->students[i].takeUpDiscipline(discipline); // <----------------------
 						return;
 					}
 					std::cout << "Discipline is not included in Student's Specialty!" << std::endl;
@@ -729,30 +759,4 @@ void Command::report(const size_t& facultyNumber) const
 		}
 
 	std::cout << "Faculty number does not exist!" << std::endl;
-}
-
-void Command::save(std::ofstream& saveData) const
-{
-	saveData.open("Students List.txt", std::ios::app);
-	if (saveData.is_open())
-	{
-		saveData << this->students << std::endl;
-		std::cout << "Data Saved successfully!" << std::endl;
-	}
-	else
-		std::cout << "File didn't open!" << std::endl;
-	saveData.close();
-}
-
-void Command::open(std::ifstream& loadData)
-{
-	loadData.open("Students List.txt");
-	if (loadData.is_open())
-	{
-		loadData >> this->students;
-		std::cout << "File Opened successfully!" << std::endl;
-	}
-	else
-		std::cout << "File didn't open!" << std::endl;
-	//loadData.close();
 }

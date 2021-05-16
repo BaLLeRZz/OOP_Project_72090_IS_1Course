@@ -1,6 +1,5 @@
 #pragma once
 #include "Student.h"
-#include <fstream>
 class Command
 {
 private:
@@ -12,18 +11,24 @@ public:
 	Command();
 	void commandList() const;
 	void chooseCommand();
+
 	bool checkFn(const size_t&) const;
 	bool checkSpec(Specialty&);
 	bool checkDisc(Discipline&);
+
 	String takeCommand(String);
-	String takeSpecialty(String);
-	String takeName(String);
 	size_t takeFacultyNumber(String&);
+	String takeSpecialty(String);
 	size_t takeNumber(String);
+	String takeName(String);
+
 	void printDisciplines() const;
 	void printSpecialties() const;
 	void printDiscInfo(Discipline&);
 	void printSpecInfo(Specialty&);
+
+	void save() const;
+	void open();
 
 	void enroll(const size_t&, Specialty&, const size_t&, const String&);
 	void advance(const size_t&);
@@ -37,6 +42,4 @@ public:
 	void addGrade(const size_t&, Discipline&, const double&);
 	void protocol(Discipline&);
 	void report(const size_t&) const;
-	void save(std::ofstream&) const;
-	void open(std::ifstream&);
 };

@@ -1,5 +1,6 @@
 #pragma once
 #include"Specialty.h"
+#include <fstream>
 class Student
 {
 private:
@@ -26,6 +27,9 @@ public:
 	size_t getGroup() const;
 	const String getStatus() const;
 	size_t getListSize() const;
+	void save();
+	void load();
+	void removeDisc(const size_t);
 
 	void enroll(const size_t&, const Specialty&, const size_t&, const String&);
 	void advance();

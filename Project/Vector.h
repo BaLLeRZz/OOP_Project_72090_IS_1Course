@@ -31,6 +31,7 @@ public:
 			out << vector.vector[i] << std::endl << std::endl;
 		return out;
 	}
+
 	friend std::istream& operator>>(std::istream& in, const Vector<T>& vector)
 	{
 		for (size_t i = 0; i < vector.size; i++)

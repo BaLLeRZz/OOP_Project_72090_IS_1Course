@@ -35,6 +35,12 @@ void Student::printList() const
 	}
 
 	size_t size = this->list.getSize();
+	if (size == 0)
+	{
+		std::cout << "Student is not registered in any Disciplines!" << std::endl;
+		return;
+	}
+
 	for (size_t i = 0; i < size; i++)
 		std::cout << this->list[i] << std::endl;
 }
@@ -118,6 +124,47 @@ const String Student::getStatus() const
 size_t Student::getListSize() const
 {
 	return this->list.getSize();
+}
+
+void Student::save()
+{
+	std::ofstream saveData("Students List.txt", std::ios::app);
+	if (saveData.is_open())
+	{
+		saveData << this->name << std::endl;
+		saveData << this->facultyNumber << std::endl;
+		saveData << this->course << std::endl;
+		saveData << this->specialty << std::endl;
+		saveData << this->group << std::endl;
+		saveData << this->status << std::endl;
+		saveData << this->avarage() << std::endl;
+	}
+	else
+		std::cout << "File did not open!" << std::endl;
+}
+
+void Student::load()
+{
+	std::ifstream loadData("Students List.txt");
+	if (loadData.is_open())
+	{
+		loadData >> this->name;
+		loadData >> this->facultyNumber;
+		loadData >> this->course;
+		loadData >> this->specialty;
+		loadData >> this->group;
+		loadData >> this->status;
+	}
+	else
+		std::cout << "File did not open!" << std::endl;
+}
+
+void Student::removeDisc(const size_t index)
+{
+	if (index >= this->list.getSize())
+		return;
+
+	this->list.remove(index);
 }
 
 void Student::enroll(const size_t& _facultyNumber, const Specialty& _specialty, const size_t& _group, const String& _name)
