@@ -88,118 +88,133 @@ void Command::commandList() const
 void Command::chooseCommand()
 {
 	bool flag = true;
+	bool isOpen = false;
 	do
 	{
 		std::cout << "-------------------------------------------------------------" << std::endl;
 		std::cout << "Command: ";
 		std::cin >> this->command;
-
 		String comm = this->takeCommand(this->command);
 		size_t facultyNumber = this->takeFacultyNumber(this->command);
 
-		if (comm == "help")
-			this->commandList();
+		if (comm == "open" && !isOpen)
+		{
+			std::cout << "File opened successfully!" << std::endl;
+			isOpen = true;
+		}
+
 		else
-			if (comm == "discList")
-				this->printDisciplines();
+		if (comm == "open" && isOpen)
+			std::cout << "A file is already opened! Close it and try again!" << std::endl;
+		else
+			std::cout << "You must open a file to use commands!" << std::endl;
+
+		if (isOpen)
+		{
+			if (comm == "help")
+				this->commandList();
 			else
-				if (comm == "specList")
-					this->printSpecialties();
+				if (comm == "discList")
+					this->printDisciplines();
 				else
-					if (comm == "enroll")
-					{
-						String name = this->takeName(this->command);
-						size_t group = this->takeNumber(this->command);
-						Specialty specialty = this->takeSpecialty(this->command);
-						this->enroll(facultyNumber, specialty, group, name);
-					}
+					if (comm == "specList")
+						this->printSpecialties();
 					else
-						if (comm == "advance")
-							this->advance(facultyNumber);
+						if (comm == "enroll")
+						{
+							String name = this->takeName(this->command);
+							size_t group = this->takeNumber(this->command);
+							Specialty specialty = this->takeSpecialty(this->command);
+							this->enroll(facultyNumber, specialty, group, name);
+						}
 						else
-							if (comm == "graduate")
-								this->graduate(facultyNumber);
+							if (comm == "advance")
+								this->advance(facultyNumber);
 							else
-								if (comm == "interrupt")
-									this->interrupt(facultyNumber);
+								if (comm == "graduate")
+									this->graduate(facultyNumber);
 								else
-									if (comm == "resume")
-										this->resume(facultyNumber);
+									if (comm == "interrupt")
+										this->interrupt(facultyNumber);
 									else
-										if (comm == "print")
-											this->print(facultyNumber);
+										if (comm == "resume")
+											this->resume(facultyNumber);
 										else
-											if (comm == "printAll")
-											{
-												size_t course = this->takeNumber(this->command);
-												Specialty specialty = this->takeSpecialty(this->command);
-												this->printAll(specialty, course);
-											}
+											if (comm == "print")
+												this->print(facultyNumber);
 											else
-												if (comm == "enrollIn")
+												if (comm == "printAll")
 												{
-													String name = this->takeName(this->command);
-													Discipline discipline;
-													discipline.setName(name);
-													this->enrollIn(facultyNumber, discipline);
+													size_t course = this->takeNumber(this->command);
+													Specialty specialty = this->takeSpecialty(this->command);
+													this->printAll(specialty, course);
 												}
 												else
-													if (comm == "addGrade")
+													if (comm == "enrollIn")
 													{
 														String name = this->takeName(this->command);
 														Discipline discipline;
 														discipline.setName(name);
-														size_t grade = this->takeNumber(this->command);
-														this->addGrade(facultyNumber, discipline, grade);
+														this->enrollIn(facultyNumber, discipline);
 													}
 													else
-														if (comm == "protocol")
+														if (comm == "addGrade")
 														{
 															String name = this->takeName(this->command);
 															Discipline discipline;
 															discipline.setName(name);
-															this->protocol(discipline);
+															size_t grade = this->takeNumber(this->command);
+															this->addGrade(facultyNumber, discipline, grade);
 														}
 														else
-															if (comm == "report")
-																this->report(facultyNumber);
+															if (comm == "protocol")
+															{
+																String name = this->takeName(this->command);
+																Discipline discipline;
+																discipline.setName(name);
+																this->protocol(discipline);
+															}
 															else
-																if (comm == "exit")
-																{
-																	std::cout << "Goodbye! :)";
-																	flag = false;
-																}
+																if (comm == "report")
+																	this->report(facultyNumber);
 																else
-																	if (comm == "discInfo")
+																	if (comm == "exit")
 																	{
-																		String name = this->takeName(this->command);
-																		Discipline discipline;
-																		discipline.setName(name);
-																		this->printDiscInfo(discipline);
+																		std::cout << "Goodbye! :)";
+																		flag = false;
 																	}
 																	else
-																		if (comm == "specInfo")
+																		if (comm == "discInfo")
 																		{
-																			Specialty specialty = this->takeSpecialty(this->command);
-																			this->printSpecInfo(specialty);
+																			String name = this->takeName(this->command);
+																			Discipline discipline;
+																			discipline.setName(name);
+																			this->printDiscInfo(discipline);
 																		}
 																		else
-																			if (comm == "change")
-																				this->change(facultyNumber);
+																			if (comm == "specInfo")
+																			{
+																				Specialty specialty = this->takeSpecialty(this->command);
+																				this->printSpecInfo(specialty);
+																			}
 																			else
-																				if (comm == "save")
-																				{
-																					std::ofstream saveData;
-																					this->save(saveData);
-																				}
+																				if (comm == "change")
+																					this->change(facultyNumber);
 																				else
-																					if (comm == "open")
+																					if (comm == "save")
 																					{
-																						
-																						this->load();
+																						std::ofstream saveData;
+																						this->save(saveData);
 																					}
-		            										else
-		            											std::cout << "Invalid Command!" << std::endl;
+																					else
+																						if (comm == "open")
+																						{
+
+																							this->load();
+																						}
+																						else
+																							std::cout << "Invalid Command!" << std::endl;
+		}
 		this->command.clear();
 	} while (flag);
 }
@@ -471,7 +486,7 @@ void Command::save(std::ofstream& saveData) const
 
 void Command::load()
 {
-	std::fstream loadData("this->takeSpecialty(this->command).txt");
+	std::fstream loadData(this->takeSpecialty(this->command));
 	/*if (loadData.is_open())
 	{
 		while(loadData.get() != '\n')
@@ -485,8 +500,6 @@ void Command::load()
 	}
 	else
 		std::cout << "File did not open!" << std::endl;*/
-
-	std::cout << "Data Loaded successfully!" << std::endl;
 }
 
 void Command::enroll(const size_t& facultyNumber, Specialty& specialty, const size_t& group, const String& name)
