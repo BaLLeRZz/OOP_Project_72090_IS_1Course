@@ -21,6 +21,7 @@ public:
 	String takeSpecialty(String);
 	size_t takeNumber(String);
 	String takeName(String);
+	const char* takeFileName(String&);
 
 	void printDisciplines() const;
 	void printSpecialties() const;

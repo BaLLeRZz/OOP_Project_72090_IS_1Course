@@ -65,7 +65,7 @@ void Command::commandList() const
 	std::cout << "- help -> Gives information about all available commands." << std::endl;
 	std::cout << "- exit -> Exits the program." << std::endl;
 	std::cout << "- save -> Saves all information." << std::endl;
-	std::cout << "- open -> Opens the file to make changes." << std::endl;
+	std::cout << "- open <adress> -> Opens the file to make changes." << std::endl;
 	std::cout << "- enroll <fn> <spec> <group> <name> -> Registers a Student in 1 Course." << std::endl;
 	std::cout << "- advance <fn> -> Transfers a Student in a next Course." << std::endl;
 	std::cout << "- change <fn> <option> <value> -> Changes a Student from <option> to <value> (specialty/group/course)." << std::endl;
@@ -95,25 +95,28 @@ void Command::chooseCommand()
 		std::cout << "Command: ";
 		std::cin >> this->command;
 		String comm = this->takeCommand(this->command);
+		if (comm == "open")
+			this->load();
+		/*
 		size_t facultyNumber = this->takeFacultyNumber(this->command);
+
+		if (comm == "help")
+			this->commandList();
 
 		if (comm == "open" && !isOpen)
 		{
 			std::cout << "File opened successfully!" << std::endl;
 			isOpen = true;
 		}
-
 		else
 		if (comm == "open" && isOpen)
 			std::cout << "A file is already opened! Close it and try again!" << std::endl;
 		else
-			std::cout << "You must open a file to use commands!" << std::endl;
+			if (!isOpen)
+			    std::cout << "You must open a file to use commands!" << std::endl;
 
 		if (isOpen)
 		{
-			if (comm == "help")
-				this->commandList();
-			else
 				if (comm == "discList")
 					this->printDisciplines();
 				else
@@ -214,7 +217,7 @@ void Command::chooseCommand()
 																						}
 																						else
 																							std::cout << "Invalid Command!" << std::endl;
-		}
+		}*/
 		this->command.clear();
 	} while (flag);
 }
@@ -415,6 +418,59 @@ String Command::takeName(String _command)
 	return _command;
 }
 
+const char* Command::takeFileName(String& _command)
+{
+	size_t size = _command.getLength();
+	char* fileN = new char[_command.getLength() + 1];
+	for (size_t i = 0; i < _command.getLength(); i++)
+		fileN[i] = _command[i];
+
+	fileN[size] = '\0';
+	bool flag = false;
+	for (size_t i = 0; i < size; i++)
+	{
+		while (fileN[i] != ' ')
+		{
+			if (fileN[i + 1] == ' ')
+			{
+				fileN[i] = ' ';
+				flag = true;
+				break;
+			}
+			fileN[i] = ' ';
+			i++;
+		}
+		if (flag)
+			break;
+	}
+
+	flag = false;
+	size_t count = 0;
+	for (size_t i = 0; i < size; i++)
+	{
+		if ((fileN[i] >= 'a' && fileN[i] <= 'z') || (fileN[i] >= 'A' && fileN[i] <= 'Z'))
+			flag = true;
+
+		if (flag)
+		{
+			for (size_t j = 0; j < size; j++)
+			{
+				if (fileN[i] == ' ')
+				{
+					fileN[j] = '\0';
+					break;
+				}
+
+				fileN[j] = fileN[i];
+				i++;
+			}
+			break;
+		}
+	}
+
+	return fileN;
+}
+
 void Command::printDisciplines() const
 {
 	std::cout << "DS - Discrete Structures" << std::endl;
@@ -475,8 +531,8 @@ void Command::save(std::ofstream& saveData) const
 	{
 		size_t size = this->students.getSize();
 		saveData << size << std::endl;
-		for (size_t i = 0; i < size; i++)
-			this->students[i].save(saveData);
+		//for (size_t i = 0; i < size; i++)
+			//this->students[i].save(saveData);
 	}
 	else
 		std::cout << "File did not open!" << std::endl;
@@ -486,16 +542,36 @@ void Command::save(std::ofstream& saveData) const
 
 void Command::load()
 {
-	std::fstream loadData(this->takeSpecialty(this->command));
+	String temp = this->takeSpecialty(this->command);
+	size_t size = temp.getLength();
+	char* fileN = new char[size + 1];
+	strcpy_s(fileN, size + 1, this->takeFileName(this->command));
+
+	if (fileN[0] != 'C' && fileN[0] != 'D')
+	{
+		std::cout << "Invalid file path input!" << std::endl;
+		return;
+	}
+
+	if (fileN[1] != ':' || fileN[2] != '\\')
+	{
+		std::cout << "Invalid file path input!" << std::endl;
+		return;
+	}
+
+	if (fileN[size - 1] != 't' || fileN[size - 2] != 'x' || fileN[size - 3] != 't' || fileN[size - 4] != '.')
+	{
+		std::cout << "Invalid file path input!" << std::endl;
+		return;
+	}
+
+	std::cout << fileN << std::endl;
+	std::ofstream loadData(fileN);
 	/*if (loadData.is_open())
 	{
-		while(loadData.get() != '\n')
-		size_t size = this->students.getSize();
-		for (size_t i = 0; i < 3; i++)
+		for (size_t i = 0; i < <shte opravq razmera posle>; i++)
 		{
 			this->students[i].load(loadData);
-			this->students.add(this->students[i]);
-			students[i].print();
 		}
 	}
 	else

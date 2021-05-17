@@ -34,13 +34,15 @@ public:
 
 	friend std::istream& operator>>(std::istream& in, String& str)
 	{
+		String temp;
 		char symbol = ' ';
 		while (symbol != '\n')
 		{
 			symbol = in.get();
-			str += symbol;
+			temp += symbol;
 		}
-		str.name[str.getLength() - 1] = '\0';
+		temp[temp.getLength() - 1] = '\0';
+		str = temp;
 		return in;
 	}
 };

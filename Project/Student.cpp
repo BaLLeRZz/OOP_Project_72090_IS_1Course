@@ -142,8 +142,10 @@ void Student::load(std::ifstream& loadData)
 	loadData >> this->name;
 	loadData >> this->facultyNumber;
 	loadData >> this->course;
+	loadData.get();
 	loadData >> this->specialty;
 	loadData >> this->group;
+	loadData.get();
 	loadData >> this->status;
 }
 
