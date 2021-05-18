@@ -14,9 +14,10 @@ private:
 public:
 	Student();
 	double avarage();
-	void printList() const;
 	bool passedAllExams() const;
 	bool isDiscInList(const Discipline&);
+	void removeDisc(const size_t);
+
 	void setSpecialty(const Specialty&);
 	void setGroup(const size_t&);
 	void setCourse(const size_t&);
@@ -24,12 +25,10 @@ public:
 	size_t getFacultyNumber() const;
 	size_t getCourse() const;
 	const String getSpecialty() const;
-	size_t getGroup() const;
-	const String getStatus() const;
 	size_t getListSize() const;
+
 	void save(std::ofstream&);
 	void load(std::ifstream&);
-	void removeDisc(const size_t);
 
 	void enroll(const size_t&, const Specialty&, const size_t&, const String&);
 	void advance();

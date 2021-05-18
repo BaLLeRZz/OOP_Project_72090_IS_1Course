@@ -26,25 +26,6 @@ double Student::avarage()
 	return ceil(100 * ((double)sum / this->list.getSize())) / 100;
 }
 
-void Student::printList() const
-{
-	if (this->status != "Registered")
-	{
-		std::cout << "Student is not Registered!" << std::endl;
-		return;
-	}
-
-	size_t size = this->list.getSize();
-	if (size == 0)
-	{
-		std::cout << "Student is not registered in any Disciplines!" << std::endl;
-		return;
-	}
-
-	for (size_t i = 0; i < size; i++)
-		std::cout << this->list[i] << std::endl;
-}
-
 bool Student::passedAllExams() const
 {
 	size_t size = this->list.getSize();
@@ -74,6 +55,14 @@ bool Student::isDiscInList(const Discipline& discipline)
 	}
 
 	return false;
+}
+
+void Student::removeDisc(const size_t index)
+{
+	if (index >= this->list.getSize())
+		return;
+
+	this->list.remove(index);
 }
 
 void Student::setSpecialty(const Specialty& _specialty)
@@ -111,16 +100,6 @@ const String Student::getSpecialty() const
 	return this->specialty.getName();
 }
 
-size_t Student::getGroup() const
-{
-	return this->group;
-}
-
-const String Student::getStatus() const
-{
-	return this->status;
-}
-
 size_t Student::getListSize() const
 {
 	return this->list.getSize();
@@ -147,14 +126,6 @@ void Student::load(std::ifstream& loadData)
 	loadData >> this->group;
 	loadData.get();
 	loadData >> this->status;
-}
-
-void Student::removeDisc(const size_t index)
-{
-	if (index >= this->list.getSize())
-		return;
-
-	this->list.remove(index);
 }
 
 void Student::enroll(const size_t& _facultyNumber, const Specialty& _specialty, const size_t& _group, const String& _name)

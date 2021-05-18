@@ -45,7 +45,10 @@ String::~String()
 
 void String::clear()
 {
-	this->name[0] = '\0';
+	char* temp = new char[1];
+	temp[0] = '\0';
+	this->erase();
+	this->name = temp;
 }
 
 size_t String::getLength() const

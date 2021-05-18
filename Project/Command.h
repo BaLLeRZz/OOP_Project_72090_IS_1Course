@@ -7,6 +7,8 @@ private:
 	Vector<Student> students;
 	Vector<Specialty> specialties;
 	Vector<Discipline> disciplines;
+	size_t fileSize;
+	bool isOpen;
 public:
 	Command();
 	void commandList() const;
@@ -28,7 +30,7 @@ public:
 	void printDiscInfo(Discipline&);
 	void printSpecInfo(Specialty&);
 
-	void save(std::ofstream&) const;
+	void save();
 	void load();
 
 	void enroll(const size_t&, Specialty&, const size_t&, const String&);
