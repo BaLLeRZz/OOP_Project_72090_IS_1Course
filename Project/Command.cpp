@@ -108,28 +108,27 @@ void Command::chooseCommand()
 		}
 
 		if (comm == "open" && !this->isOpen)
-			this->load();
+			this->open();
 
 		else
-		if (comm == "open" && this->isOpen)
-			std::cout << "A file is already opened! Close it and try again!" << std::endl;
+			if (comm == "open" && this->isOpen)
+				std::cout << "A file is already opened! Close it and try again!" << std::endl;
 
-		else
-		if (!isOpen)
-			std::cout << "You must open a file to use commands!" << std::endl;
+			else
+				if (!isOpen)
+					std::cout << "You must open a file to use commands!" << std::endl;
 
 		if (isOpen)
 		{
 			if (comm == "save")
 				this->save();
 
-			/*else
+			else
 			if (comm == "saveAs")
 				this->saveAs();
-
 			else
 			if (comm == "close")
-				this->close();*/
+				this->close();
 
 			else
 			if (comm == "exit")
@@ -164,8 +163,8 @@ void Command::chooseCommand()
 				this->interrupt(facultyNumber);
 
 			else
-				if (comm == "resume")
-					this->resume(facultyNumber);
+			if (comm == "resume")
+				this->resume(facultyNumber);
 
 			else
 			if (comm == "print")
@@ -234,10 +233,12 @@ void Command::chooseCommand()
 				Specialty specialty = this->takeSpecialty(this->command);
 				this->printSpecInfo(specialty);
 			}
+
+			else
+				std::cout << "Invalid Command!" << std::endl;
 		}
 		this->command.clear();
-	}
-	while (flag);
+	} 	while (flag);
 }
 
 bool Command::checkFn(const size_t& facultyNumber) const
@@ -246,9 +247,9 @@ bool Command::checkFn(const size_t& facultyNumber) const
 	for (size_t i = 0; i < size; i++)
 		if (facultyNumber == this->students[i].getFacultyNumber())
 			return true;
-	
+
 	return false;
-	
+
 }
 
 bool Command::checkSpec(Specialty& specialty)
@@ -291,7 +292,7 @@ String Command::takeCommand(String _command)
 			_command[i] = '\0';
 			break;
 		}
-		if(!flag)
+		if (!flag)
 		{
 			_command.remove(i);
 			i--;
@@ -350,7 +351,7 @@ String Command::takeSpecialty(String _command)
 		if (flag)
 			break;
 	}
-	
+
 	size = _command.getLength();
 	flag = false;
 	for (size_t i = 0; i < size; i++)
@@ -363,14 +364,14 @@ String Command::takeSpecialty(String _command)
 			_command[i] = '\0';
 			break;
 		}
-		
-		if(!flag)
+
+		if (!flag)
 		{
 			_command.remove(i);
 			i--;
 		}
 	}
-	
+
 	return _command;
 }
 
@@ -545,29 +546,22 @@ void Command::save()
 		return;
 	}
 
-	String temp = this->takeSpecialty(this->command);
-	size_t sizeFileName = temp.getLength();
-	char* fileN = new char[sizeFileName + 1];
-	strcpy_s(fileN, sizeFileName + 1, this->takeFileName(this->command));
-
-	std::ofstream saveData(fileN, std::ios::beg);
+	std::ofstream saveData(this->filename.getName(), std::ios::beg);
 	if (saveData.is_open())
 	{
 		size_t size = this->students.getSize();
 		saveData << size << std::endl;
 		for (size_t i = 0; i < size; i++)
-		{
 			this->students[i].save(saveData);
-			saveData << std::endl;
-		}
 	}
 	else
 		std::cout << "File did not open!" << std::endl;
 
 	std::cout << "Data Saved successfully!" << std::endl;
+	this->filename.clear();
 }
 
-void Command::load()
+void Command::saveAs()
 {
 	String temp = this->takeSpecialty(this->command);
 	size_t size = temp.getLength();
@@ -592,21 +586,63 @@ void Command::load()
 		return;
 	}
 
-    std::ifstream loadData(fileN);
+	this->filename = fileN;
+	this->save();
+}
+
+void Command::open()
+{
+	String temp = this->takeSpecialty(this->command);
+	size_t size = temp.getLength();
+	char* fileN = new char[size + 1];
+	strcpy_s(fileN, size + 1, this->takeFileName(this->command));
+
+	if (fileN[0] != 'C' && fileN[0] != 'D')
+	{
+		std::cout << "Invalid file path input!" << std::endl;
+		return;
+	}
+
+	if (fileN[1] != ':' || fileN[2] != '\\')
+	{
+		std::cout << "Invalid file path input!" << std::endl;
+		return;
+	}
+
+	if (fileN[size - 1] != 't' || fileN[size - 2] != 'x' || fileN[size - 3] != 't' || fileN[size - 4] != '.')
+	{
+		std::cout << "Invalid file path input!" << std::endl;
+		return;
+	}
+
+	this->filename = fileN;
+	std::ifstream loadData(this->filename.getName(), std::ios::beg);
 	if (loadData.is_open())
 	{
 		loadData >> this->fileSize;
+		loadData.ignore();
 		for (size_t i = 0; i < this->fileSize; i++)
-			this->students[i].load(loadData); //<----
+		{
+			Student temp;
+			temp.load(loadData);
+			this->students.add(temp);
+			loadData.ignore();
+		}
 	}
 	else
 	{
-		std::ofstream createFile(fileN);
+		std::ofstream createFile(this->filename.getName());
 		createFile << this->fileSize << std::endl;
 	}
 
 	this->isOpen = true;
 	std::cout << "File opened successfully!" << std::endl;
+}
+
+void Command::close()
+{
+	this->students.clear();
+	this->isOpen = false;
 }
 
 void Command::enroll(const size_t& facultyNumber, Specialty& specialty, const size_t& group, const String& name)
@@ -640,7 +676,7 @@ void Command::enroll(const size_t& facultyNumber, Specialty& specialty, const si
 		std::cout << "Invalid Name input!" << std::endl;
 		return;
 	}
-	
+
 	this->checkSpec(specialty);
 	Student st;
 	st.enroll(facultyNumber, specialty, group, name);
@@ -652,7 +688,7 @@ void Command::enroll(const size_t& facultyNumber, Specialty& specialty, const si
 void Command::advance(const size_t& facultyNumber)
 {
 	size_t size = this->students.getSize();
-	for(size_t i = 0; i < size; i++)
+	for (size_t i = 0; i < size; i++)
 		if (this->students[i].getFacultyNumber() == facultyNumber)
 		{
 			this->students[i].advance();
@@ -693,7 +729,7 @@ void Command::change(const size_t& facultyNumber)
 
 				std::cout << "Specialty changed successfully!" << std::endl;
 				return;
-				
+
 			}
 			else
 				if (option == "group")
@@ -733,7 +769,7 @@ void Command::change(const size_t& facultyNumber)
 void Command::graduate(const size_t& facultyNumber)
 {
 	size_t size = this->students.getSize();
-	for(size_t i = 0; i < size; i++)
+	for (size_t i = 0; i < size; i++)
 		if (this->students[i].getFacultyNumber() == facultyNumber)
 		{
 			this->students[i].graduate();
@@ -796,7 +832,7 @@ void Command::printAll(Specialty& specialty, const size_t& course)
 		std::cout << "Invalid Course input!" << std::endl;
 		return;
 	}
-	
+
 	std::cout << "Students' information: " << std::endl << std::endl;
 	size_t size = this->students.getSize();
 	this->checkSpec(specialty);
@@ -814,19 +850,19 @@ void Command::enrollIn(const size_t& facultyNumber, Discipline& discipline)
 	for (size_t i = 0; i < size; i++)
 		if (this->students[i].getFacultyNumber() == facultyNumber)
 		{
-				if (this->checkDisc(discipline))
+			if (this->checkDisc(discipline))
+			{
+				Specialty spec = this->students[i].getSpecialty();
+				this->checkSpec(spec);
+				this->checkDisc(discipline);
+				if (spec.isDisciplineInList(discipline))
 				{
-					Specialty spec = this->students[i].getSpecialty();
-					this->checkSpec(spec);
-					this->checkDisc(discipline);
-					if (spec.isDisciplineInList(discipline))
-					{
-						this->students[i].takeUpDiscipline(discipline); // <----------------------
-						return;
-					}
-					std::cout << "Discipline is not included in Student's Specialty!" << std::endl;
+					this->students[i].takeUpDiscipline(discipline); // <----------------------
 					return;
 				}
+				std::cout << "Discipline is not included in Student's Specialty!" << std::endl;
+				return;
+			}
 			std::cout << "Discipline does not exist!" << std::endl;
 			return;
 		}
@@ -843,16 +879,16 @@ void Command::addGrade(const size_t& facultyNumber, Discipline& discipline, cons
 	for (size_t i = 0; i < sizeS; i++)
 		if (this->students[i].getFacultyNumber() == facultyNumber)
 		{
-				if (this->checkDisc(discipline))
+			if (this->checkDisc(discipline))
+			{
+				if (this->students[i].isDiscInList(discipline))
 				{
-					if (this->students[i].isDiscInList(discipline))
-					{
-						this->students[i].addMark(discipline, grade);
-						return;
-					}
-					std::cout << "Student is not registered in this discipline!" << std::endl;
+					this->students[i].addMark(discipline, grade);
 					return;
 				}
+				std::cout << "Student is not registered in this discipline!" << std::endl;
+				return;
+			}
 			std::cout << "Discipline does not exist!" << std::endl;
 			return;
 		}

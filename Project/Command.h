@@ -4,11 +4,12 @@ class Command
 {
 private:
 	String command;
+	String filename;
+	size_t fileSize;
+	bool isOpen;
 	Vector<Student> students;
 	Vector<Specialty> specialties;
 	Vector<Discipline> disciplines;
-	size_t fileSize;
-	bool isOpen;
 public:
 	Command();
 	void commandList() const;
@@ -31,7 +32,9 @@ public:
 	void printSpecInfo(Specialty&);
 
 	void save();
-	void load();
+	void saveAs();
+	void open();
+	void close();
 
 	void enroll(const size_t&, Specialty&, const size_t&, const String&);
 	void advance(const size_t&);

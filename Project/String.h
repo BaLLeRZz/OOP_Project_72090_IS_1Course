@@ -13,8 +13,9 @@ public:
 	String(const String&);
 	String& operator=(const String&);
 	~String();
-	
+
 	void clear();
+	const char* getName() const;
 	size_t getLength() const;
 	size_t convertFromString();
 	void remove(const size_t&);

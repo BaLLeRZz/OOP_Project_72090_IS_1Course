@@ -51,6 +51,11 @@ void String::clear()
 	this->name = temp;
 }
 
+const char* String::getName() const
+{
+	return this->name;
+}
+
 size_t String::getLength() const
 {
 	return strlen(this->name);
@@ -88,7 +93,7 @@ void String::remove(const size_t& index)
 {
 	if (index >= strlen(this->name))
 		return;
-	
+
 	for (size_t i = index; i < strlen(this->name); i++)
 		this->name[i] = this->name[i + 1];
 
@@ -105,8 +110,8 @@ String& String::operator=(const char* _name)
 
 bool String::operator==(const String& other) const
 {
-	if(this == &other)
-	   return true;
+	if (this == &other)
+		return true;
 
 	if (strlen(this->name) != strlen(other.name))
 		return false;
@@ -159,8 +164,8 @@ bool String::operator!=(const char* _name) const
 
 char& String::operator[](const size_t& index)
 {
-	if(index >= strlen(this->name))
-	   return this->name[this->getLength() - 1];
+	if (index >= strlen(this->name))
+		return this->name[this->getLength() - 1];
 
 	return this->name[index];
 }

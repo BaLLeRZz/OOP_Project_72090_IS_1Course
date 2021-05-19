@@ -18,6 +18,7 @@ public:
 
 	Specialty& operator=(const Specialty&);
 	bool operator==(const Specialty&) const;
+	bool operator==(const char*) const;
 	bool operator!=(const Specialty&) const;
 
 	friend std::ostream& operator<<(std::ostream& out, const Specialty& spec)

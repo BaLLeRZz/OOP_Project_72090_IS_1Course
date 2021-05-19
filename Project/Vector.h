@@ -21,6 +21,7 @@ public:
 	void insert(const T&, const size_t&);
 	void add(const T&);
 	void remove(const size_t&);
+	void clear();
 	void print() const;
 	T& operator[](const size_t&) const;
 	bool operator!=(const char*) const;
@@ -114,7 +115,7 @@ void Vector<T>::insert(const T& element, const size_t& index)
 
 	for (size_t i = this->size; i > index; i--)
 		this->vector[i] = this->vector[i - 1];
-	
+
 	this->vector[index] = element;
 	this->size++;
 }
@@ -144,6 +145,15 @@ void Vector<T>::remove(const size_t& index)
 	delete[] this->vector;
 	this->vector = temp;
 	this->size--;
+}
+
+template<class T>
+void Vector<T>::clear()
+{
+	this->size = 0;
+	this->capacity = 10;
+	this->erase();
+	this->vector = new T[capacity];
 }
 
 template<class T>

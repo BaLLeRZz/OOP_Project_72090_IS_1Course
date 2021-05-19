@@ -71,6 +71,11 @@ bool Specialty::operator==(const Specialty& other) const
 	return false;
 }
 
+bool Specialty::operator==(const char* other) const
+{
+	return this->name == other;
+}
+
 bool Specialty::operator!=(const Specialty& other) const
 {
 	if (this == &other)

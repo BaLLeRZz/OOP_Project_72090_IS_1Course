@@ -119,6 +119,8 @@ void Student::save(std::ofstream& saveData)
 void Student::load(std::ifstream& loadData)
 {
 	loadData >> this->name;
+	if (this->name == "")
+		loadData >> this->name;
 	loadData >> this->facultyNumber;
 	loadData >> this->course;
 	loadData.get();
