@@ -17,6 +17,7 @@ public:
 	bool passedAllExams() const;
 	bool isDiscInList(const Discipline&);
 	void removeDisc(const size_t);
+	void clearList();
 
 	void setSpecialty(const Specialty&);
 	void setGroup(const size_t&);

@@ -108,15 +108,21 @@ void Command::chooseCommand()
 		}
 
 		if (comm == "open" && !this->isOpen)
+		{
 			this->open();
+			continue;
+		}
 
 		else
-			if (comm == "open" && this->isOpen)
-				std::cout << "A file is already opened! Close it and try again!" << std::endl;
+		if (comm == "open" && this->isOpen)
+		{
+			std::cout << "A file is already opened! Close it and try again!" << std::endl;
+			continue;
+		}
 
-			else
-				if (!isOpen)
-					std::cout << "You must open a file to use commands!" << std::endl;
+		else
+		if (!isOpen)
+			std::cout << "You must open a file to use commands!" << std::endl;
 
 		if (isOpen)
 		{
@@ -555,7 +561,10 @@ void Command::save()
 			this->students[i].save(saveData);
 	}
 	else
+	{
 		std::cout << "File did not open!" << std::endl;
+		return;
+	}
 
 	std::cout << "Data Saved successfully!" << std::endl;
 	this->filename.clear();
@@ -643,6 +652,7 @@ void Command::close()
 {
 	this->students.clear();
 	this->isOpen = false;
+	std::cout << "File Closed successfully!" << std::endl;
 }
 
 void Command::enroll(const size_t& facultyNumber, Specialty& specialty, const size_t& group, const String& name)
@@ -717,15 +727,10 @@ void Command::change(const size_t& facultyNumber)
 					return;
 				}
 
-				size_t count = this->students[i].getListSize();
-				for (size_t j = 0; count > 0;)
-				{
-					this->students[i].removeDisc(j);
-					count--;
-				}
-
+				this->students[i].clearList();
 				this->checkSpec(specialty);
 				this->students[i].setSpecialty(specialty);
+				this->students[i].setCourse(1);
 
 				std::cout << "Specialty changed successfully!" << std::endl;
 				return;
@@ -857,7 +862,7 @@ void Command::enrollIn(const size_t& facultyNumber, Discipline& discipline)
 				this->checkDisc(discipline);
 				if (spec.isDisciplineInList(discipline))
 				{
-					this->students[i].takeUpDiscipline(discipline); // <----------------------
+					this->students[i].takeUpDiscipline(discipline);
 					return;
 				}
 				std::cout << "Discipline is not included in Student's Specialty!" << std::endl;

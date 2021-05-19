@@ -65,6 +65,11 @@ void Student::removeDisc(const size_t index)
 	this->list.remove(index);
 }
 
+void Student::clearList()
+{
+	this->list.clear();
+}
+
 void Student::setSpecialty(const Specialty& _specialty)
 {
 	this->specialty = _specialty;
