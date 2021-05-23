@@ -293,7 +293,7 @@ String Command::takeCommand(String _command)
 		if ((_command[i] >= 'a' && _command[i] <= 'z') || (_command[i] >= 'A' && _command[i] <= 'Z'))
 			flag = true;
 
-		if (_command[i] == ' ' && flag)
+		if ((_command[i] == ' ' || _command[i] == 9) && flag)
 		{
 			_command[i] = '\0';
 			break;
@@ -427,7 +427,7 @@ String Command::takeName(String _command)
 			flag = true;
 		}
 
-		if (_command[i] != ' ' && _command[i - 1] == ' ' && flag)
+		if (_command[i] != ' ' && (_command[i - 1] == ' ' || _command[i - 1] == 9) && flag)
 		{
 			position++;
 			break;
