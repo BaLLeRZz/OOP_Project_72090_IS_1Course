@@ -718,6 +718,12 @@ void Command::change(const size_t& facultyNumber)
 	for (size_t i = 0; i < size; i++)
 		if (this->students[i].getFacultyNumber() == facultyNumber)
 		{
+			if (this->students[i].getStatus() != "Registered")
+			{
+				std::cout << "Student is not Registered!" << std::endl;
+				return;
+			}
+
 			if (option == "specialty")
 			{
 				Specialty specialty = value;

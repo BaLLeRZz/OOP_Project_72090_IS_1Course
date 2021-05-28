@@ -26,6 +26,7 @@ public:
 	size_t getFacultyNumber() const;
 	size_t getCourse() const;
 	const String getSpecialty() const;
+	const String getStatus() const;
 	size_t getListSize() const;
 
 	void save(std::ofstream&);

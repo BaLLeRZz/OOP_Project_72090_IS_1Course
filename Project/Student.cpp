@@ -105,6 +105,11 @@ const String Student::getSpecialty() const
 	return this->specialty.getName();
 }
 
+const String Student::getStatus() const
+{
+	return this->status;
+}
+
 size_t Student::getListSize() const
 {
 	return this->list.getSize();
@@ -124,7 +129,7 @@ void Student::save(std::ofstream& saveData)
 void Student::load(std::ifstream& loadData)
 {
 	loadData >> this->name;
-	if (this->name == "")
+	if (this->name == "") // instead cin.ignore()
 		loadData >> this->name;
 	loadData >> this->facultyNumber;
 	loadData >> this->course;
@@ -147,6 +152,12 @@ void Student::enroll(const size_t& _facultyNumber, const Specialty& _specialty, 
 
 void Student::advance()
 {
+	if (this->status != "Registered")
+	{
+		std::cout << "Student is not Registered!" << std::endl;
+		return;
+	}
+
 	if (this->course == 4)
 	{
 		std::cout << "Student is currently in 4th course and cannot advance to next course!" << std::endl;
@@ -159,6 +170,12 @@ void Student::advance()
 
 void Student::graduate()
 {
+	if (this->status != "Registered")
+	{
+		std::cout << "Student is not Registered!" << std::endl;
+		return;
+	}
+
 	if (this->course == 4 && this->passedAllExams() && this->status == "Registered")
 	{
 		this->status = "Graduated";
@@ -187,7 +204,7 @@ void Student::resume()
 		std::cout << "Student Resumed Successfully!" << std::endl;
 	}
 	else
-		std::cout << "Student is not Dropout and cannot resume!" << std::endl;
+		std::cout << "Student is not a Dropout and cannot resume!" << std::endl;
 }
 
 void Student::print()
@@ -270,7 +287,10 @@ void Student::addMark(const Discipline& discipline, const double& mark)
 void Student::examsInfo()
 {
 	if (this->status != "Registered")
+	{
+		std::cout << "Student is not Registered!" << std::endl;
 		return;
+	}
 
 	size_t size = this->list.getSize();
 	std::cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~" << std::endl;
